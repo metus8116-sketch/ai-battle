@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="briefing">
+  <title>스테이블코인 풀 APY 일간 비교 브리핑 (2026-11-17)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Briefing style tokens */
+      --background: #faf9f5;
+      --surface-container-low: #ffffff;
+      --surface-container: #f1efe8;
+      --surface-container-high: #e6e2d6;
+
+      --on-surface: #17181a;
+      --on-surface-variant: #56585c;
+
+      --outline: #17181a;
+      --outline-variant: #dedad0;
+      --outline-subtle: #c8c4b8;
+
+      --primary: #17181a;
+      --on-primary: #faf9f5;
+      --primary-container: #f2b705;
+      --on-primary-container: #17181a;
+      --secondary: #1f4e5f;
+      --tertiary: #785008;
+      --error: #b42318;
+      --on-error: #ffffff;
+
+      /* Semantic & surface tints */
+      --positive: #2b6e52;
+      --positive-bg: #eaf4ef;
+      --error-bg: #fdf1f0;
+      --warning: #785008;
+      --warning-bg: #f5e6c4;
+      --secondary-bg: #eaf1f4;
+      --focus: #1f4e5f;
+
+      /* Data series */
+      --data-1: #1f4e5f;
+      --data-2: #d99000;
+      --data-3: #2b6e52;
+      --data-4: #b84a39;
+      --data-context: #c4bfb2;
+
+      /* Fonts */
+      --font-headline: 'Noto Serif KR', 'Source Serif 4', serif;
+      --font-body: 'Noto Sans KR', 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Noto Sans KR', 'Geist Mono', monospace;
+      --font-mono: 'Geist Mono', monospace;
+
+      /* Shape & effects */
+      --rounded: 0.25rem;
+      --rounded-lg: 0.375rem;
+      --rounded-full: 0.25rem;
+      --badge-radius: 2px;
+      --section-rule: 1.5px solid var(--outline);
+      --card-border: 1px solid var(--outline-variant);
+      --row-border: 1px solid var(--outline-variant);
+      --btn-border: 1px solid var(--outline-subtle);
+      --risk-border: 4px solid var(--error);
+      --warning-border: 4px solid var(--primary-container);
+
+      /* Type scale (Dashboard) */
+      --display-size: clamp(1.65rem, 1.3rem + 1.4vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg) var(--space-md) var(--space-2xl);
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Dossier Bar & Header */
+    .dossier-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--section-rule);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .dossier-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .dossier-pill {
+      display: inline-flex;
+      align-items: center;
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: var(--label-size);
+      letter-spacing: 0.02em;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+    }
+    .dossier-meta {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      line-height: 1.18;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .standfirst {
+      font-family: var(--font-body);
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      color: var(--secondary);
+      margin: var(--space-sm) 0 0;
+      max-width: 72ch;
+    }
+
+    /* Top Disclaimer Strip */
+    .disclaimer-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--surface-container);
+      border-top: var(--section-rule);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      margin-top: var(--space-md);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+    .disclaimer-tag {
+      background: var(--on-surface);
+      color: var(--on-primary);
+      font-weight: 700;
+      font-size: var(--label-size);
+      padding: 0.125rem var(--space-sm);
+      border-radius: var(--badge-radius);
+      flex-shrink: 0;
+    }
+
+    /* Section Headers */
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--section-rule);
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+    .section-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+    .index-num {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--secondary);
+      background: var(--surface-container);
+      padding: 0.125rem var(--space-xs);
+      border-radius: var(--badge-radius);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .section-sub {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    /* KPI Summary Grid (Asymmetric emphasis) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+    .figure-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+    .kpi-span-3 { grid-column: span 3; }
+    .kpi-card-alert {
+      border-left: var(--risk-border);
+      background: var(--surface-container-low);
+    }
+    .kpi-label {
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: clamp(1.45rem, 1.2rem + 0.8vw, 1.9rem);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+      color: var(--on-surface);
+    }
+    .kpi-detail {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .delta-pos { color: var(--positive); font-weight: 600; }
+    .delta-neg { color: var(--error); font-weight: 600; }
+    .delta-flat { color: var(--on-surface-variant); font-weight: 500; }
+
+    .kpi-jump-btn {
+      margin-top: var(--space-xs);
+      align-self: flex-start;
+      background: var(--error-bg);
+      color: var(--error);
+      border: 1px solid var(--error);
+      border-radius: var(--rounded);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      min-height: 36px;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .kpi-jump-btn:hover {
+      background: var(--error);
+      color: var(--on-error);
+    }
+
+    /* Outlier Risk Warning Section */
+    .risk-panel {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: var(--risk-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .risk-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background: var(--error);
+      color: var(--on-error);
+      font-size: var(--label-size);
+      font-weight: 700;
+      padding: 0.1875rem var(--space-sm);
+      border-radius: var(--badge-radius);
+    }
+    .risk-lead {
+      margin: 0 0 var(--space-md);
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+    }
+    .outlier-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .outlier-item {
+      background: var(--error-bg);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .outlier-name {
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+    }
+    .outlier-meta {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .outlier-apy {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.0625rem;
+      color: var(--error);
+    }
+    .risk-checklist {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-sm);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .risk-check-item {
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      border-left: var(--warning-border);
+    }
+    .risk-check-title {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--on-surface);
+      margin-bottom: 0.125rem;
+    }
+    .risk-check-desc {
+      font-size: 0.84rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Filter & Control Panel */
+    .controls-panel {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .control-group-label {
+      display: block;
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+    .chain-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .chain-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      background: var(--background);
+      border: var(--btn-border);
+      border-radius: var(--rounded);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .chain-chip:hover {
+      background: var(--surface-container);
+    }
+    .chain-chip.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .chain-count {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      opacity: 0.8;
+    }
+
+    .search-filter-row {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .text-input, .select-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      border: var(--btn-border);
+      border-radius: var(--rounded);
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+    }
+    .select-input {
+      padding-right: var(--space-xl);
+      cursor: pointer;
+    }
+    .reset-btn {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border: var(--btn-border);
+      border-radius: var(--rounded);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .reset-btn:hover {
+      background: var(--surface-container-high);
+    }
+
+    /* Chart Section */
+    .chart-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .chart-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .chart-legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: 0.875rem;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-weight: 600;
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--badge-radius);
+      display: inline-block;
+    }
+    .swatch-pos { background: var(--positive); }
+    .swatch-neg { background: var(--error); }
+    .swatch-warn { background: var(--primary-container); }
+
+    .chart-mode-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .mode-btn {
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      background: var(--background);
+      border: var(--btn-border);
+      border-radius: var(--rounded);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mode-btn.is-active {
+      background: var(--secondary);
+      color: var(--on-primary);
+      border-color: var(--secondary);
+    }
+    .chart-container-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 420px;
+      height: 460px;
+    }
+    .chart-inspector {
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    /* Data Table Section */
+    .table-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+    }
+    .table-status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--surface-container);
+      border-bottom: var(--row-border);
+      font-size: 0.875rem;
+    }
+    .mobile-sort-bar {
+      display: none;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border-bottom: var(--row-border);
+      gap: var(--space-sm);
+      align-items: end;
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table.pool-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+    table.pool-table thead th {
+      background: var(--surface-container-low);
+      border-bottom: var(--section-rule);
+      padding: var(--space-sm) var(--space-sm);
+      font-weight: 700;
+      font-size: var(--label-size);
+      color: var(--on-surface);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    table.pool-table thead th.num-col {
+      text-align: right;
+    }
+    .sort-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background: transparent;
+      border: none;
+      padding: var(--space-xs) var(--space-xs);
+      min-height: 44px;
+      font-weight: 700;
+      font-size: var(--label-size);
+      color: inherit;
+      cursor: pointer;
+      border-radius: var(--rounded);
+    }
+    .sort-btn:hover {
+      background: var(--surface-container);
+    }
+    .sort-btn.is-sorted {
+      color: var(--secondary);
+    }
+    .sort-arrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      opacity: 0.55;
+    }
+    .sort-btn.is-sorted .sort-arrow {
+      opacity: 1;
+      color: var(--secondary);
+    }
+    table.pool-table tbody tr {
+      border-bottom: var(--row-border);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    table.pool-table tbody tr:hover {
+      background: var(--surface-container);
+    }
+    table.pool-table tbody tr.row-outlier {
+      background: var(--error-bg);
+    }
+    table.pool-table tbody tr.row-outlier:hover {
+      background: var(--warning-bg);
+    }
+    table.pool-table tbody td {
+      padding: var(--space-sm) var(--space-sm);
+      vertical-align: middle;
+    }
+    table.pool-table tbody td.num-col {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .pool-name-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+    .pool-title-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-xs);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .pool-warn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: var(--error);
+      color: var(--on-error);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 0.1rem 0.375rem;
+      border-radius: var(--badge-radius);
+      white-space: nowrap;
+    }
+    .chain-badge {
+      display: inline-block;
+      background: var(--surface-container);
+      color: var(--on-surface);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: 0.125rem var(--space-sm);
+      border-radius: var(--badge-radius);
+      white-space: nowrap;
+    }
+    .asset-badge {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--secondary);
+      background: var(--secondary-bg);
+      padding: 0.125rem var(--space-sm);
+      border-radius: var(--badge-radius);
+      white-space: nowrap;
+    }
+    .change-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      padding: 0.125rem var(--space-xs);
+      border-radius: var(--badge-radius);
+      min-width: 4.75rem;
+      text-align: right;
+    }
+    .change-pill.is-pos {
+      background: var(--positive-bg);
+      color: var(--positive);
+    }
+    .change-pill.is-neg {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+    .change-pill.is-flat {
+      background: var(--surface-container);
+      color: var(--on-surface-variant);
+    }
+    .defillama-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      white-space: nowrap;
+    }
+    .copy-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-height: 36px;
+      padding: 0.25rem var(--space-sm);
+      background: var(--background);
+      border: var(--btn-border);
+      border-radius: var(--rounded);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .copy-link-btn:hover {
+      background: var(--secondary-bg);
+    }
+    .copy-link-btn.is-copied {
+      background: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+
+    /* Mobile Card List (hidden on desktop) */
+    .mobile-pool-list {
+      display: none;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+    }
+    .mobile-pool-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .mobile-pool-card.row-outlier {
+      background: var(--error-bg);
+      border-left: var(--risk-border);
+    }
+    .mobile-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .mobile-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      font-size: var(--label-size);
+    }
+    .mobile-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      border-top: var(--row-border);
+      border-bottom: var(--row-border);
+      padding: var(--space-sm) 0;
+    }
+    .mobile-metric-label {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: block;
+    }
+    .mobile-metric-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .mobile-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .defi-path-text {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--on-surface-variant);
+      word-break: break-all;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: var(--space-2xl) var(--space-md);
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .empty-state.is-visible {
+      display: flex;
+    }
+    .empty-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.125rem;
+      margin: 0;
+    }
+    .empty-desc {
+      margin: 0;
+      color: var(--on-surface-variant);
+      font-size: 0.9375rem;
+    }
+
+    /* Footer Disclaimer & Sources */
+    .aside-box {
+      background: var(--surface-container);
+      border-top: var(--section-rule);
+      border-radius: var(--rounded);
+      padding: var(--space-lg);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+    .footer-heading {
+      font-family: var(--font-headline);
+      font-size: 1.0625rem;
+      font-weight: 700;
+      margin: 0 0 var(--space-xs);
+    }
+    .footer-text {
+      margin: 0 0 var(--space-sm);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+    .footer-list {
+      margin: 0;
+      padding-left: var(--space-md);
+      font-size: 0.84rem;
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1024px) {
+      .kpi-span-3 { grid-column: span 6; }
+      .risk-panel { grid-template-columns: minmax(0, 1fr); }
+      .search-filter-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+      .aside-box { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media (max-width: 720px) {
+      .table-scroll { display: none; }
+      .mobile-sort-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+      .mobile-pool-list { display: flex; }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md) var(--space-sm) var(--space-xl);
+        gap: var(--space-md);
+      }
+      .kpi-span-3 { grid-column: span 12; }
+      .search-filter-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .figure-card, .risk-panel, .controls-panel, .chart-card {
+        padding: var(--space-md);
+      }
+      .chart-container-wrap {
+        min-height: 360px;
+        height: 380px;
+      }
+      .chain-chip {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.8125rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid">
+    <!-- Header -->
+    <header>
+      <div class="dossier-bar">
+        <div class="dossier-left">
+          <span class="dossier-pill">STABLECOIN YIELD BRIEFING</span>
+          <span class="dossier-meta">기준일 2026-11-17 (Asia/Seoul) · TVL ≥ $10,000,000 · 68개 풀</span>
+        </div>
+        <span class="dossier-meta">출처: DefiLlama Yields 수집본</span>
+      </div>
+      <h1 class="title">스테이블코인 풀 어제 대비 오늘 APY 비교 대시보드</h1>
+      <p class="standfirst">TVL 1천만 달러 이상 68개 스테이블 계열 풀의 전일 대비 수익률(%p) 변동과 이례적 고수익 풀 위험 요소를 한눈에 점검합니다.</p>
+      <div class="disclaimer-strip" role="note" aria-label="투자 권유 아님 안내">
+        <span class="disclaimer-tag">투자 권유 아님</span>
+        <span>본 대시보드는 정보 제공 목적의 일간 현황 비교 자료이며, 수익을 보장하거나 특정 풀 예치·투자를 권유하지 않습니다.</span>
+      </div>
+    </header>
+
+    <!-- KPI Summary Cards -->
+    <section aria-label="핵심 요약 지표">
+      <div class="kpi-grid">
+        <div class="figure-card kpi-span-3">
+          <div class="kpi-label"><span>현재 필터 풀 수 / 합산 TVL</span></div>
+          <div class="kpi-value" id="kpi-count">68개</div>
+          <div class="kpi-detail" id="kpi-tvl">합산 TVL $0</div>
+        </div>
+        <div class="figure-card kpi-span-3">
+          <div class="kpi-label"><span>오늘 APY 중앙값</span></div>
+          <div class="kpi-value" id="kpi-median">4.98%</div>
+          <div class="kpi-detail" id="kpi-median-note">전일 중앙값 대비 비교</div>
+        </div>
+        <div class="figure-card kpi-span-3">
+          <div class="kpi-label"><span>어제 대비 변동 분포</span></div>
+          <div class="kpi-value" id="kpi-movers">상승 21 · 하락 22</div>
+          <div class="kpi-detail" id="kpi-movers-detail">변동 없음 25개 풀</div>
+        </div>
+        <div class="figure-card kpi-span-3 kpi-card-alert">
+          <div class="kpi-label"><span>이례적 고수익 풀 (≥20%)</span></div>
+          <div class="kpi-value" id="kpi-outlier-count">2개</div>
+          <div class="kpi-detail">중앙값(4.98%) 4배 초과</div>
+          <button type="button" class="kpi-jump-btn" onclick="filterOutliersOnly()">경고 풀만 보기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Outlier Warning Panel -->
+    <section aria-labelledby="risk-section-title">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="index-num">01</span>
+          <h2 class="section-title" id="risk-section-title">이례적 고수익 풀 위험 안내 및 점검 항목</h2>
+        </div>
+        <span class="section-sub">중앙값 ~4.98% 대비 20% 이상 고수익 풀 대상</span>
+      </div>
+      <div class="risk-panel">
+        <div>
+          <div class="risk-header">
+            <span class="risk-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              고수익 경보 (APY ≥ 20%)
+            </span>
+          </div>
+          <p class="risk-lead">수집본 중앙값(약 4.98%)을 크게 웃도는 연 20% 이상 APY는 일시적 인센티브·파생상품 손익 또는 고위험 신용 구조에서 비롯되는 경우가 많습니다. 아래 해당 풀은 투자·예치 전 구조적 위험을 반드시 확인해야 합니다.</p>
+          <div class="outlier-list" id="outlier-summary-list"></div>
+        </div>
+        <ul class="risk-checklist">
+          <li class="risk-check-item">
+            <div class="risk-check-title">1. 스마트컨트랙트 위험 (Smart Contract Risk)</div>
+            <p class="risk-check-desc">외부 보안 감사 이력, 관리자 멀티시그(Multisig) 권한, 오라클 가격 피드 오류 및 크로스체인 브릿지 취약점 여부를 확인하세요.</p>
+          </li>
+          <li class="risk-check-item">
+            <div class="risk-check-title">2. 풀 구성 및 수익원 위험 (Pool Composition &amp; Yield Source)</div>
+            <p class="risk-check-desc">단순 온체인 담보대출 이자가 아닌 RWA(실물연계자산) 사모신용, 무기한 선물 마켓메이킹(HLP), 델타 뉴트럴 등 기초 전략의 손실 구조를 점검하세요.</p>
+          </li>
+          <li class="risk-check-item">
+            <div class="risk-check-title">3. 반대 위험 및 유동성 제약 (Counterparty &amp; Liquidity Risk)</div>
+            <p class="risk-check-desc">차입자 채무불이행·트레이더 수익 발생 시 볼트(Vault) 원금 손실 가능성, 출금 대기열·락업 기간, 스테이블코인 디페깅 위험을 반드시 확인하세요.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Chain Filter & Search Controls -->
+    <section aria-labelledby="filter-section-title">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="index-num">02</span>
+          <h2 class="section-title" id="filter-section-title">체인 필터 및 조건 검색</h2>
+        </div>
+        <span class="section-sub">선택한 체인·검색어는 아래 차트와 표에 동시에 반영됩니다</span>
+      </div>
+      <div class="controls-panel">
+        <div>
+          <span class="control-group-label">체인별 보기</span>
+          <div class="chain-chips" id="chain-filter-chips" role="group" aria-label="체인 필터"></div>
+        </div>
+        <div class="search-filter-row">
+          <div class="field-wrap">
+            <label class="control-group-label" for="search-input">풀 이름 · 프로토콜 · 자산 검색</label>
+            <input type="search" id="search-input" class="text-input" placeholder="예: Aave, Fluid, USDC, Hyperliquid" oninput="handleSearchInput(this.value)">
+          </div>
+          <div class="field-wrap">
+            <label class="control-group-label" for="direction-select">변동 및 위험 필터</label>
+            <select id="direction-select" class="select-input" onchange="handleDirectionChange(this.value)">
+              <option value="all">전체 풀 보기</option>
+              <option value="up">어제 대비 상승 (+%p)</option>
+              <option value="down">어제 대비 하락 (-%p)</option>
+              <option value="flat">변동 없음 (0.00%p)</option>
+              <option value="outlier">이례적 고수익 경고 (≥20%)</option>
+            </select>
+          </div>
+          <div class="field-wrap">
+            <label class="control-group-label" for="asset-select">자산 필터</label>
+            <select id="asset-select" class="select-input" onchange="handleAssetChange(this.value)">
+              <option value="ALL">전체 자산</option>
+            </select>
+          </div>
+          <button type="button" class="reset-btn" onclick="resetAllFilters()">필터 초기화</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diverging APY Change Chart -->
+    <section aria-labelledby="chart-section-title">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="index-num">03</span>
+          <h2 class="section-title" id="chart-section-title">어제 대비 오늘 APY 변화(%p) 시각화</h2>
+        </div>
+        <span class="section-sub" id="chart-subtitle">상승(우측) / 하락(좌측) 구분 · 단위: 퍼센트 포인트(%p)</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-toolbar">
+          <div class="chart-legend-row">
+            <span class="legend-item"><span class="legend-swatch swatch-pos"></span>상승 (+%p)</span>
+            <span class="legend-item"><span class="legend-swatch swatch-neg"></span>하락 (-%p)</span>
+            <span class="legend-item"><span class="legend-swatch swatch-warn"></span>이례적 고수익 (≥20%) 풀 표시</span>
+          </div>
+          <div class="chart-mode-group" role="group" aria-label="차트 표시 범위 선택">
+            <button type="button" class="mode-btn is-active" id="mode-top" onclick="setChartMode('top')">주요 변동 (상하위 16개)</button>
+            <button type="button" class="mode-btn" id="mode-changed" onclick="setChartMode('changed')">변동 있는 풀 전체</button>
+          </div>
+        </div>
+        <div class="chart-container-wrap" id="chart-container-wrap">
+          <canvas id="apy-change-chart" aria-label="어제 대비 오늘 APY 변화(%p) 막대 차트"></canvas>
+        </div>
+        <div class="chart-inspector" id="chart-inspector">
+          <span>차트 막대를 클릭하거나 마우스를 올리면 해당 풀의 어제·오늘 APY와 TVL 상세 내역을 확인할 수 있습니다.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sortable & Searchable Table -->
+    <section aria-labelledby="table-section-title">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="index-num">04</span>
+          <h2 class="section-title" id="table-section-title">스테이블코인 풀 상세 비교표</h2>
+        </div>
+        <span class="section-sub">열 제목을 클릭하여 오름차순/내림차순 정렬 · DefiLlama 풀 경로 복사 지원</span>
+      </div>
+      <div class="table-card">
+        <div class="table-status-bar">
+          <span id="table-count-label">총 68개 중 68개 표시 중</span>
+          <span id="copy-feedback" role="status" aria-live="polite"></span>
+        </div>
+
+        <!-- Mobile Sort Controls -->
+        <div class="mobile-sort-bar">
+          <div class="field-wrap">
+            <label class="control-group-label" for="mobile-sort-select">정렬 기준</label>
+            <select id="mobile-sort-select" class="select-input" onchange="handleMobileSortChange(this.value)">
+              <option value="absChange">변화폭 큰 순</option>
+              <option value="today">오늘 APY 순</option>
+              <option value="yesterday">어제 APY 순</option>
+              <option value="change">변화(%p) 순</option>
+              <option value="tvl">TVL 순</option>
+              <option value="name">풀 이름 순</option>
+              <option value="protocol">프로토콜 순</option>
+              <option value="chain">체인 순</option>
+            </select>
+          </div>
+          <button type="button" class="reset-btn" id="mobile-sort-dir-btn" onclick="toggleMobileSortDir()">내림차순 ↓</button>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="table-scroll">
+          <table class="pool-table">
+            <thead>
+              <tr>
+                <th><button type="button" class="sort-btn" data-sort="name" onclick="sortByColumn('name')">풀 이름 <span class="sort-arrow" id="arrow-name">↕</span></button></th>
+                <th><button type="button" class="sort-btn" data-sort="protocol" onclick="sortByColumn('protocol')">프로토콜 <span class="sort-arrow" id="arrow-protocol">↕</span></button></th>
+                <th><button type="button" class="sort-btn" data-sort="chain" onclick="sortByColumn('chain')">체인 <span class="sort-arrow" id="arrow-chain">↕</span></button></th>
+                <th><button type="button" class="sort-btn" data-sort="asset" onclick="sortByColumn('asset')">자산 <span class="sort-arrow" id="arrow-asset">↕</span></button></th>
+                <th class="num-col"><button type="button" class="sort-btn" data-sort="yesterday" onclick="sortByColumn('yesterday')">어제 APY(%) <span class="sort-arrow" id="arrow-yesterday">↕</span></button></th>
+                <th class="num-col"><button type="button" class="sort-btn" data-sort="today" onclick="sortByColumn('today')">오늘 APY(%) <span class="sort-arrow" id="arrow-today">↕</span></button></th>
+                <th class="num-col"><button type="button" class="sort-btn is-sorted" data-sort="change" onclick="sortByColumn('change')">변화(%p) <span class="sort-arrow" id="arrow-change">↓</span></button></th>
+                <th class="num-col"><button type="button" class="sort-btn" data-sort="tvl" onclick="sortByColumn('tvl')">TVL(USD) <span class="sort-arrow" id="arrow-tvl">↕</span></button></th>
+                <th>DefiLlama</th>
+              </tr>
+            </thead>
+            <tbody id="pool-table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Card List -->
+        <div class="mobile-pool-list" id="mobile-pool-list"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state">
+          <p class="empty-title">일치하는 스테이블코인 풀이 없습니다</p>
+          <p class="empty-desc">선택한 체인, 자산 또는 검색어 조건을 만족하는 풀이 없습니다. 필터를 초기화해 전체 68개 풀을 확인해 보세요.</p>
+          <button type="button" class="reset-btn" onclick="resetAllFilters()">전체 풀 보기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Disclaimer & Sources -->
+    <footer class="aside-box" aria-label="면책 조항 및 데이터 출처">
+      <div>
+        <h2 class="footer-heading">투자 권유 아님 및 이용 주의사항</h2>
+        <p class="footer-text">본 웹페이지는 2026년 11월 17일(Asia/Seoul) 기준 스테이블코인 풀 현황을 정리한 <strong>정보 안내용</strong> 자료입니다. 특정 프로토콜이나 풀에 대한 투자 권유, 매수·예치 추천이 아니며 표시된 과거·현재 수익률을 보장하지 않습니다.</p>
+        <p class="footer-text">디파이(DeFi) 스테이블코인 풀은 스마트컨트랙트 오류, 페깅 이탈(디페깅), 유동성 고갈, 차입자·운용 전략의 반대 위험으로 인해 원금 손실이 발생할 수 있습니다. 의사결정 전 각 프로토콜의 공식 문서와 감사 보고서를 직접 확인하시기 바랍니다.</p>
+      </div>
+      <div>
+        <h2 class="footer-heading">데이터 기준 및 출처</h2>
+        <ul class="footer-list">
+          <li>기준일(오늘): 2026-11-17 (Asia/Seoul) / 어제 수치: 전일 스냅샷(previous_apy)</li>
+          <li>수집 필터: 스테이블 계열 풀, TVL ≥ $10,000,000 (총 68개 풀)</li>
+          <li>단위 안내: APY 및 변화량은 퍼센트 포인트(%p), 소수 둘째 자리 반올림</li>
+          <li>출처: DefiLlama Yields (yields.llama.fi/pools) · 코아원 부수입 브리핑 수집본</li>
+          <li>외부 이동 안내: 보안 샌드박스 환경에서는 외부 링크 직접 이동이 제한되므로, 표의 DefiLlama 경로 복사 버튼으로 풀 경로(defillama.com/yields/pool/…)를 복사해 확인하세요.</li>
+        </ul>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const POOLS = [
+      { id: `b6c2ddc1-dfea-55d7-b39d-5bdbf084fef2`, name: `Pareto Credit USDC (Ethereum) · b6c2ddc1`, protocol: `Pareto Credit`, chain: `Ethereum`, asset: `USDC`, yesterday: 14.05, today: 0.00, change: -14.05, tvl: 12087375 },
+      { id: `20e45c3e-7de7-4d34-89e7-20858ecdf252`, name: `Dolomite USDC (Ethereum)`, protocol: `Dolomite`, chain: `Ethereum`, asset: `USDC`, yesterday: 8.61, today: 3.91, change: -4.70, tvl: 18913042 },
+      { id: `4438dabc-7f0c-430b-8136-2722711ae663`, name: `Fluid USDC (Ethereum)`, protocol: `Fluid`, chain: `Ethereum`, asset: `USDC`, yesterday: 13.49, today: 10.74, change: -2.75, tvl: 136231025 },
+      { id: `4e8cc592-c8d5-4824-8155-128ba521e903`, name: `Fluid USDT (Ethereum)`, protocol: `Fluid`, chain: `Ethereum`, asset: `USDT`, yesterday: 11.41, today: 12.84, change: 1.43, tvl: 113908130 },
+      { id: `c676790b-ba37-5aa8-9ccf-d9a533daafdc`, name: `Hyperliquid HLP USDC (Hyperliquid L1)`, protocol: `Hyperliquid HLP`, chain: `Hyperliquid L1`, asset: `USDC`, yesterday: 21.25, today: 20.00, change: -1.25, tvl: 151883697 },
+      { id: `4c45cc9e-e1a4-43c9-8a3d-687d96abb07c`, name: `Fluid USDC (Arbitrum)`, protocol: `Fluid`, chain: `Arbitrum`, asset: `USDC`, yesterday: 4.82, today: 6.02, change: 1.20, tvl: 54176795 },
+      { id: `7e0661bf-8cf3-45e6-9424-31916d4c7b84`, name: `Aave V3 USDC (Base)`, protocol: `Aave V3`, chain: `Base`, asset: `USDC`, yesterday: 5.03, today: 6.15, change: 1.13, tvl: 13597468 },
+      { id: `8c4bbc10-5763-5d5b-8450-05ddd24b1c33`, name: `Kamino USDC (Solana) · 8c4bbc10`, protocol: `Kamino`, chain: `Solana`, asset: `USDC`, yesterday: 6.99, today: 5.91, change: -1.08, tvl: 44289414 },
+      { id: `e737d721-f45c-40f0-9793-9f56261862b9`, name: `Uniswap V3 USDC-USDT (Ethereum)`, protocol: `Uniswap V3`, chain: `Ethereum`, asset: `USDC-USDT`, yesterday: 3.20, today: 2.26, change: -0.94, tvl: 33547630 },
+      { id: `d783c8df-e2ed-44b4-8317-161ccc1b5f06`, name: `Jupiter Lend USDC (Solana)`, protocol: `Jupiter Lend`, chain: `Solana`, asset: `USDC`, yesterday: 3.87, today: 4.73, change: 0.86, tvl: 450817344 },
+      { id: `e338c687-a5d8-4abf-bc04-127990811b0a`, name: `Aave V3 USDT0 (Plasma)`, protocol: `Aave V3`, chain: `Plasma`, asset: `USDT0`, yesterday: 4.02, today: 4.82, change: 0.80, tvl: 33220465 },
+      { id: `6f00d46b-8735-49ae-9ced-2a0fccc56ad0`, name: `Aave V3 USDC (Ethereum) · 6f00d46b`, protocol: `Aave V3`, chain: `Ethereum`, asset: `USDC`, yesterday: 5.60, today: 6.29, change: 0.70, tvl: 53876225 },
+      { id: `aa70268e-4b52-42bf-a116-608b370f9501`, name: `Aave V3 USDC (Ethereum) · aa70268e`, protocol: `Aave V3`, chain: `Ethereum`, asset: `USDC`, yesterday: 3.81, today: 4.48, change: 0.68, tvl: 153531650 },
+      { id: `80359eae-ff65-4fa6-842d-c971dc2928de`, name: `Centrifuge USDC (Avalanche)`, protocol: `Centrifuge`, chain: `Avalanche`, asset: `USDC`, yesterday: 4.65, today: 5.32, change: 0.67, tvl: 264169908 },
+      { id: `82469f6f-951d-4578-b47e-fb4df326f059`, name: `Centrifuge USDC (Base)`, protocol: `Centrifuge`, chain: `Base`, asset: `USDC`, yesterday: 4.65, today: 5.32, change: 0.67, tvl: 22859427 },
+      { id: `b8d0d351-ac04-40de-9768-1fb9fdc68114`, name: `Midas RWA USDC (Ethereum) · b8d0d351`, protocol: `Midas RWA`, chain: `Ethereum`, asset: `USDC`, yesterday: 3.28, today: 3.75, change: 0.47, tvl: 71299373 },
+      { id: `21e972fb-b330-4289-8bfa-6a14e925ecdb`, name: `Fluid USDT0 (Plasma)`, protocol: `Fluid`, chain: `Plasma`, asset: `USDT0`, yesterday: 4.71, today: 4.29, change: -0.42, tvl: 13778709 },
+      { id: `7da72d09-56ca-4ec5-a45f-59114353e487`, name: `Compound V3 USDC (Ethereum)`, protocol: `Compound V3`, chain: `Ethereum`, asset: `USDC`, yesterday: 3.22, today: 3.60, change: 0.38, tvl: 34693022 },
+      { id: `a0860ad8-ba2a-4ff8-8a13-348788864f23`, name: `Current USDC (Sui)`, protocol: `Current`, chain: `Sui`, asset: `USDC`, yesterday: 6.86, today: 7.19, change: 0.33, tvl: 13821426 },
+      { id: `4d296741-940d-44c1-a729-f6bd1f330f6f`, name: `Tydro USDC (Ink)`, protocol: `Tydro`, chain: `Ink`, asset: `USDC`, yesterday: 4.57, today: 4.24, change: -0.33, tvl: 16114964 },
+      { id: `a2fbc7ec-22c2-43fe-aa42-49f854aa940d`, name: `Jupiter Lend USDT (Solana)`, protocol: `Jupiter Lend`, chain: `Solana`, asset: `USDT`, yesterday: 4.16, today: 3.86, change: -0.30, tvl: 17152943 },
+      { id: `9f3a6015-5045-4471-ba65-ad3dc7c38269`, name: `Venus Core Pool USDT (BSC)`, protocol: `Venus Core Pool`, chain: `BSC`, asset: `USDT`, yesterday: 4.99, today: 4.70, change: -0.29, tvl: 22883134 },
+      { id: `7d491f26-a03b-4eca-ae2c-e068391b15d3`, name: `Midas RWA USDC (Ethereum) · 7d491f26`, protocol: `Midas RWA`, chain: `Ethereum`, asset: `USDC`, yesterday: 7.60, today: 7.85, change: 0.25, tvl: 66274355 },
+      { id: `488f06db-5a36-450e-9ba9-b4321be39c7c`, name: `Fluid Lite USDC (Ethereum)`, protocol: `Fluid Lite`, chain: `Ethereum`, asset: `USDC`, yesterday: 7.81, today: 8.03, change: 0.22, tvl: 37311316 },
+      { id: `f06872f7-a5c9-478e-a7cf-a3ba356b99e6`, name: `Harmonix Finance USDC (Hyperliquid L1)`, protocol: `Harmonix Finance`, chain: `Hyperliquid L1`, asset: `USDC`, yesterday: 5.93, today: 5.73, change: -0.21, tvl: 11513600 },
+      { id: `dac406f6-5600-437e-849d-f03daa383864`, name: `JustLend V1 USDT (Tron)`, protocol: `JustLend V1`, chain: `Tron`, asset: `USDT`, yesterday: 2.03, today: 1.82, change: -0.21, tvl: 87719325 },
+      { id: `1a9c61c7-4094-4ee7-8d46-6ea8fb5689f1`, name: `Accountable USDC (Monad)`, protocol: `Accountable`, chain: `Monad`, asset: `USDC`, yesterday: 10.69, today: 10.50, change: -0.19, tvl: 71483285 },
+      { id: `6cd85774-b80b-5fd4-8194-7b4126b24634`, name: `Hyperliquid Earn USDC (Hyperliquid L1)`, protocol: `Hyperliquid Earn`, chain: `Hyperliquid L1`, asset: `USDC`, yesterday: 2.60, today: 2.70, change: 0.10, tvl: 257867266 },
+      { id: `058afa77-d1cc-537c-9c28-1da002b45631`, name: `Kamino USDC (Solana) · 058afa77`, protocol: `Kamino`, chain: `Solana`, asset: `USDC`, yesterday: 3.26, today: 3.34, change: 0.07, tvl: 15443755 },
+      { id: `52d6a1b3-8021-435c-8f3a-b0ac9834cfbc`, name: `Fluid DEX USDC-USDT (Ethereum)`, protocol: `Fluid DEX`, chain: `Ethereum`, asset: `USDC-USDT`, yesterday: 0.09, today: 0.02, change: -0.07, tvl: 32598740 },
+      { id: `29be6a85-414f-4a66-b075-98863278912a`, name: `Aave V3 USDT (BSC)`, protocol: `Aave V3`, chain: `BSC`, asset: `USDT`, yesterday: 2.97, today: 2.92, change: -0.05, tvl: 12450089 },
+      { id: `f4200c7d-d3fd-5b88-9398-ba66eac63a03`, name: `Sentora Curator USDC (Ethereum)`, protocol: `Sentora Curator`, chain: `Ethereum`, asset: `USDC`, yesterday: 7.61, today: 7.65, change: 0.04, tvl: 99429795 },
+      { id: `d5959f91-86ce-4177-b234-49e1f17d8f82`, name: `Yearn Finance USDC (Ethereum) · d5959f91`, protocol: `Yearn Finance`, chain: `Ethereum`, asset: `USDC`, yesterday: 6.03, today: 6.07, change: 0.04, tvl: 13355526 },
+      { id: `43641cf5-a92e-416b-bce9-27113d3c0db6`, name: `Maple USDC (Ethereum)`, protocol: `Maple`, chain: `Ethereum`, asset: `USDC`, yesterday: 5.22, today: 5.24, change: 0.03, tvl: 2235329063 },
+      { id: `a90d554a-b548-4f50-b03e-9dcb724b7777`, name: `Aave V3 USDT (Ethereum) · a90d554a`, protocol: `Aave V3`, chain: `Ethereum`, asset: `USDT`, yesterday: 4.89, today: 4.92, change: 0.03, tvl: 59164621 },
+      { id: `7d89af7a-24c9-4292-aa38-7c71b05fbd6d`, name: `Yearn Finance USDC (Ethereum) · 7d89af7a`, protocol: `Yearn Finance`, chain: `Ethereum`, asset: `USDC`, yesterday: 4.36, today: 4.39, change: 0.03, tvl: 18214237 },
+      { id: `f981a304-bb6c-45b8-b0c5-fd2f515ad23a`, name: `Aave V3 USDT (Ethereum) · f981a304`, protocol: `Aave V3`, chain: `Ethereum`, asset: `USDT`, yesterday: 3.17, today: 3.20, change: 0.03, tvl: 393219365 },
+      { id: `3665ee7e-6c5d-49d9-abb7-c47ab5d9d4ac`, name: `Aave V3 DAI (Ethereum)`, protocol: `Aave V3`, chain: `Ethereum`, asset: `DAI`, yesterday: 2.98, today: 2.94, change: -0.03, tvl: 18890122 },
+      { id: `d2141a59-c199-4be7-8d4b-c8223954836b`, name: `Kamino USDC (Solana) · d2141a59`, protocol: `Kamino`, chain: `Solana`, asset: `USDC`, yesterday: 3.46, today: 3.48, change: 0.02, tvl: 34147769 },
+      { id: `8edfdf02-cdbb-43f7-bca6-954e5fe56813`, name: `Maple USDT (Ethereum)`, protocol: `Maple`, chain: `Ethereum`, asset: `USDT`, yesterday: 5.06, today: 5.05, change: -0.01, tvl: 550272327 },
+      { id: `f4d5b566-e815-4ca2-bb07-7bcd8bc797f1`, name: `Compound V3 USDT (Ethereum)`, protocol: `Compound V3`, chain: `Ethereum`, asset: `USDT`, yesterday: 3.18, today: 3.17, change: -0.01, tvl: 18564478 },
+      { id: `e09ce053-d310-5ea8-b63c-36a87684db53`, name: `Aave V4 USDC (Arc)`, protocol: `Aave V4`, chain: `Arc`, asset: `USDC`, yesterday: 1.91, today: 1.90, change: -0.01, tvl: 43737023 },
+      { id: `8a922da8-ee3c-44c8-a6c0-68bed39089c2`, name: `PancakeSwap AMM V3 USDC-USDT (Ethereum)`, protocol: `PancakeSwap AMM V3`, chain: `Ethereum`, asset: `USDC-USDT`, yesterday: 0.10, today: 0.11, change: 0.01, tvl: 17612943 },
+      { id: `15cc07d7-3ffc-49e6-8500-deaeb414e32d`, name: `Midas RWA USDC (Ethereum) · 15cc07d7`, protocol: `Midas RWA`, chain: `Ethereum`, asset: `USDC`, yesterday: 32.05, today: 32.05, change: 0.00, tvl: 19713106 },
+      { id: `0e003273-7092-52e8-ad56-5dc25a67482f`, name: `Accountable USDC (Ethereum)`, protocol: `Accountable`, chain: `Ethereum`, asset: `USDC`, yesterday: 12.12, today: 12.12, change: 0.00, tvl: 16745660 },
+      { id: `a1a9916c-63b2-49a1-b4b0-cbe8a9e7275c`, name: `Ember USDC (Sui)`, protocol: `Ember`, chain: `Sui`, asset: `USDC`, yesterday: 10.01, today: 10.01, change: 0.00, tvl: 10162591 },
+      { id: `be51b647-f8fd-5708-a179-cecbd6ece3a3`, name: `Agua USDC (Ethereum)`, protocol: `Agua`, chain: `Ethereum`, asset: `USDC`, yesterday: 10.00, today: 10.00, change: 0.00, tvl: 10660604 },
+      { id: `4ae1f481-ae46-5a2c-82a2-13e192180594`, name: `Ember USDC (Ethereum)`, protocol: `Ember`, chain: `Ethereum`, asset: `USDC`, yesterday: 9.33, today: 9.33, change: 0.00, tvl: 18016832 },
+      { id: `44a8967e-00f1-4cde-8c25-823f36953021`, name: `Zerobase CeDeFi USDT (Ethereum)`, protocol: `Zerobase CeDeFi`, chain: `Ethereum`, asset: `USDT`, yesterday: 9.00, today: 9.00, change: 0.00, tvl: 14196559 },
+      { id: `79788d49-3f2f-4dd3-ac58-50c191486b6f`, name: `Zerobase CeDeFi USDC (Base)`, protocol: `Zerobase CeDeFi`, chain: `Base`, asset: `USDC`, yesterday: 9.00, today: 9.00, change: 0.00, tvl: 10519696 },
+      { id: `a116d53b-69ab-4665-a7c1-6813b3ebb728`, name: `Zerobase CeDeFi USDT (BSC)`, protocol: `Zerobase CeDeFi`, chain: `BSC`, asset: `USDT`, yesterday: 8.76, today: 8.76, change: 0.00, tvl: 15936345 },
+      { id: `2eb2bdf8-c3e3-5b30-8d49-8d5232294184`, name: `Pareto Credit USDC (Ethereum) · 2eb2bdf8`, protocol: `Pareto Credit`, chain: `Ethereum`, asset: `USDC`, yesterday: 8.07, today: 8.07, change: 0.00, tvl: 144148437 },
+      { id: `a451a8da-e3c4-4049-9bab-ea90ab96234a`, name: `Bitway Earn USDT (BSC)`, protocol: `Bitway Earn`, chain: `BSC`, asset: `USDT`, yesterday: 8.00, today: 8.00, change: 0.00, tvl: 20242618 },
+      { id: `6d681636-0c6d-5ad3-b05f-46117f1f02ae`, name: `Kamino USDC (Solana) · 6d681636`, protocol: `Kamino`, chain: `Solana`, asset: `USDC`, yesterday: 7.54, today: 7.54, change: 0.00, tvl: 50048960 },
+      { id: `70267deb-6203-537d-b013-c861e063419c`, name: `Midas RWA USDC (Base)`, protocol: `Midas RWA`, chain: `Base`, asset: `USDC`, yesterday: 7.48, today: 7.48, change: 0.00, tvl: 104129832 },
+      { id: `38cae0ab-6989-5f2e-a9b0-04e5d088d580`, name: `Midas RWA USDC (Robinhood Chain)`, protocol: `Midas RWA`, chain: `Robinhood Chain`, asset: `USDC`, yesterday: 7.48, today: 7.48, change: 0.00, tvl: 58502113 },
+      { id: `4e11cab6-afe4-5785-ac9d-cf3b46dc67f7`, name: `Midas RWA USDC (Ethereum) · 4e11cab6`, protocol: `Midas RWA`, chain: `Ethereum`, asset: `USDC`, yesterday: 6.92, today: 6.92, change: 0.00, tvl: 34278583 },
+      { id: `015556b9-0b7d-5dc5-9a9d-99ee3fbe89ee`, name: `Pareto Credit USDC (Ethereum) · 015556b9`, protocol: `Pareto Credit`, chain: `Ethereum`, asset: `USDC`, yesterday: 6.62, today: 6.62, change: 0.00, tvl: 22004557 },
+      { id: `ebb3a954-fd67-4a3b-ac2f-3a8c7be9200b`, name: `Midas RWA USDC (Ethereum) · ebb3a954`, protocol: `Midas RWA`, chain: `Ethereum`, asset: `USDC`, yesterday: 6.18, today: 6.18, change: 0.00, tvl: 31183118 },
+      { id: `a5d67f7e-5b51-4a9d-969d-caf051a7f5a4`, name: `Spark Savings USDT (Ethereum)`, protocol: `Spark Savings`, chain: `Ethereum`, asset: `USDT`, yesterday: 4.25, today: 4.25, change: 0.00, tvl: 263383893 },
+      { id: `c5c74dd1-995c-4445-9d84-3e710bad7d52`, name: `Spark Savings USDC (Ethereum)`, protocol: `Spark Savings`, chain: `Ethereum`, asset: `USDC`, yesterday: 3.80, today: 3.80, change: 0.00, tvl: 274175185 },
+      { id: `8fbe28b8-140d-4e37-8804-5d2aba4daded`, name: `SparkLend USDT (Ethereum)`, protocol: `SparkLend`, chain: `Ethereum`, asset: `USDT`, yesterday: 3.79, today: 3.79, change: 0.00, tvl: 17433429 },
+      { id: `e26ce7d9-db75-4aa4-b1db-cc21ae17bdfb`, name: `SparkLend DAI (Ethereum)`, protocol: `SparkLend`, chain: `Ethereum`, asset: `DAI`, yesterday: 3.58, today: 3.58, change: 0.00, tvl: 51900626 },
+      { id: `14bd0ebc-1c70-4b61-80a9-91390179286a`, name: `Credix USDC (Solana)`, protocol: `Credix`, chain: `Solana`, asset: `USDC`, yesterday: 0.03, today: 0.03, change: 0.00, tvl: 13406766 },
+      { id: `25171c4c-1877-449a-9f88-45a9f153ee31`, name: `Curve DAI-USDC-USDT (Ethereum)`, protocol: `Curve`, chain: `Ethereum`, asset: `DAI-USDC-USDT`, yesterday: 0.00, today: 0.00, change: 0.00, tvl: 158648798 },
+      { id: `1dee4660-d688-4800-8e0f-7af0d77bcde1`, name: `Centrifuge USDC (Plume Mainnet)`, protocol: `Centrifuge`, chain: `Plume Mainnet`, asset: `USDC`, yesterday: 0.00, today: 0.00, change: 0.00, tvl: 15424140 },
+      { id: `57647093-2868-4e65-97ab-9cae8ec74e7d`, name: `Compound V2 USDT (Ethereum)`, protocol: `Compound V2`, chain: `Ethereum`, asset: `USDT`, yesterday: 0.00, today: 0.00, change: 0.00, tvl: 13929626 },
+      { id: `90c0b5b5-6e92-47b8-b644-fcb4a4a0d708`, name: `GrowIHF USDC (Hyperliquid L1)`, protocol: `GrowIHF`, chain: `Hyperliquid L1`, asset: `USDC`, yesterday: 0.00, today: 0.00, change: 0.00, tvl: 12053734 }
+    ];
+
+    const state = {
+      chain: `ALL`,
+      asset: `ALL`,
+      direction: `all`,
+      search: ``,
+      sortKey: `absChange`,
+      sortDir: `desc`,
+      chartMode: `top`
+    };
+
+    let apyChartInstance = null;
+    let copyTimer = null;
+
+    function isOutlierPool(pool) {
+      return pool.today >= 20 || pool.yesterday >= 20;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    function formatPct(val) {
+      return `${Number(val).toFixed(2)}%`;
+    }
+
+    function formatChange(val) {
+      const n = Number(val);
+      if (n > 0) return `+${n.toFixed(2)}%p`;
+      if (n < 0) return `${n.toFixed(2)}%p`;
+      return `0.00%p`;
+    }
+
+    function formatUsd(val) {
+      return `$${Math.round(val).toLocaleString(`en-US`)}`;
+    }
+
+    function formatCompactUsd(val) {
+      if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
+      if (val >= 1e6) return `$${(val / 1e6).toFixed(1)}M`;
+      return formatUsd(val);
+    }
+
+    function getDefiLlamaPath(id) {
+      return `defillama.com/yields/pool/${id}`;
+    }
+
+    function getCssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function getFilteredPools() {
+      const q = state.search.trim().toLowerCase();
+      return POOLS.filter(function (p) {
+        if (state.chain !== `ALL` && p.chain !== state.chain) return false;
+        if (state.asset !== `ALL` && p.asset !== state.asset) return false;
+        if (state.direction === `up` && p.change <= 0) return false;
+        if (state.direction === `down` && p.change >= 0) return false;
+        if (state.direction === `flat` && p.change !== 0) return false;
+        if (state.direction === `outlier` && !isOutlierPool(p)) return false;
+        if (q) {
+          const hay = `${p.name} ${p.protocol} ${p.chain} ${p.asset}`.toLowerCase();
+          if (hay.indexOf(q) === -1) return false;
+        }
+        return true;
+      });
+    }
+
+    function getSortedPools(list) {
+      const copy = list.slice();
+      const key = state.sortKey;
+      const mult = state.sortDir === `asc` ? 1 : -1;
+      copy.sort(function (a, b) {
+        if (key === `absChange`) {
+          const diff = Math.abs(a.change) - Math.abs(b.change);
+          if (diff !== 0) return diff * mult;
+          return (a.tvl - b.tvl) * -1;
+        }
+        const va = a[key];
+        const vb = b[key];
+        if (typeof va === `number` && typeof vb === `number`) {
+          if (va !== vb) return (va - vb) * mult;
+          return (a.tvl - b.tvl) * -1;
+        }
+        return String(va).localeCompare(String(vb), `ko`) * mult;
+      });
+      return copy;
+    }
+
+    function computeMedian(nums) {
+      if (!nums.length) return 0;
+      const sorted = nums.slice().sort(function (a, b) { return a - b; });
+      const mid = Math.floor(sorted.length / 2);
+      if (sorted.length % 2 === 0) {
+        return (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+      return sorted[mid];
+    }
+
+    function renderOutlierSummary() {
+      const container = document.getElementById(`outlier-summary-list`);
+      if (!container) return;
+      const outliers = POOLS.filter(isOutlierPool);
+      container.innerHTML = outliers.map(function (p) {
+        return `
+          <div class="outlier-item">
+            <div>
+              <div class="outlier-name">${escapeHtml(p.name)}</div>
+              <div class="outlier-meta">어제 ${formatPct(p.yesterday)} → 오늘 ${formatPct(p.today)} (${formatChange(p.change)}) · TVL ${formatCompactUsd(p.tvl)}</div>
+            </div>
+            <div class="outlier-apy">${formatPct(p.today)}</div>
+          </div>
+        `;
+      }).join(``);
+    }
+
+    function renderChainChips() {
+      const container = document.getElementById(`chain-filter-chips`);
+      if (!container) return;
+      const counts = {};
+      POOLS.forEach(function (p) {
+        counts[p.chain] = (counts[p.chain] || 0) + 1;
+      });
+      const chains = Object.keys(counts).sort(function (a, b) {
+        if (counts[b] !== counts[a]) return counts[b] - counts[a];
+        return a.localeCompare(b);
+      });
+      let html = `<button type="button" class="chain-chip ${state.chain === `ALL` ? `is-active` : ``}" onclick="selectChain('ALL')">전체 <span class="chain-count">${POOLS.length}</span></button>`;
+      chains.forEach(function (ch) {
+        const activeClass = state.chain === ch ? `is-active` : ``;
+        html += `<button type="button" class="chain-chip ${activeClass}" onclick="selectChain('${escapeHtml(ch)}')">${escapeHtml(ch)} <span class="chain-count">${counts[ch]}</span></button>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function renderAssetOptions() {
+      const select = document.getElementById(`asset-select`);
+      if (!select) return;
+      const counts = {};
+      POOLS.forEach(function (p) {
+        counts[p.asset] = (counts[p.asset] || 0) + 1;
+      });
+      const assets = Object.keys(counts).sort(function (a, b) {
+        return counts[b] - counts[a];
+      });
+      let html = `<option value="ALL">전체 자산 (${POOLS.length})</option>`;
+      assets.forEach(function (asset) {
+        html += `<option value="${escapeHtml(asset)}">${escapeHtml(asset)} (${counts[asset]})</option>`;
+      });
+      select.innerHTML = html;
+      select.value = state.asset;
+    }
+
+    function renderKpis(filtered) {
+      const countEl = document.getElementById(`kpi-count`);
+      const tvlEl = document.getElementById(`kpi-tvl`);
+      const medEl = document.getElementById(`kpi-median`);
+      const medNoteEl = document.getElementById(`kpi-median-note`);
+      const moversEl = document.getElementById(`kpi-movers`);
+      const moversDetailEl = document.getElementById(`kpi-movers-detail`);
+      const outlierEl = document.getElementById(`kpi-outlier-count`);
+
+      const totalTvl = filtered.reduce(function (acc, p) { return acc + p.tvl; }, 0);
+      const todayMed = computeMedian(filtered.map(function (p) { return p.today; }));
+      const yesterdayMed = computeMedian(filtered.map(function (p) { return p.yesterday; }));
+      const upCount = filtered.filter(function (p) { return p.change > 0; }).length;
+      const downCount = filtered.filter(function (p) { return p.change < 0; }).length;
+      const flatCount = filtered.filter(function (p) { return p.change === 0; }).length;
+      const outCount = filtered.filter(isOutlierPool).length;
+
+      if (countEl) countEl.textContent = `${filtered.length}개`;
+      if (tvlEl) tvlEl.textContent = `합산 TVL ${formatCompactUsd(totalTvl)} (${formatUsd(totalTvl)})`;
+      if (medEl) medEl.textContent = filtered.length ? formatPct(todayMed) : `-`;
+      if (medNoteEl) {
+        medNoteEl.textContent = filtered.length
+          ? `전일 중앙값 ${formatPct(yesterdayMed)} · 전체 기준 ~4.98%`
+          : `선택된 풀 없음`;
+      }
+      if (moversEl) {
+        moversEl.innerHTML = `<span class="delta-pos">상승 ${upCount}</span> · <span class="delta-neg">하락 ${downCount}</span>`;
+      }
+      if (moversDetailEl) {
+        moversDetailEl.textContent = `변동 없음 ${flatCount}개 풀 (총 ${filtered.length}개 중)`;
+      }
+      if (outlierEl) outlierEl.textContent = `${outCount}개`;
+    }
+
+    function updateChartInspector(pool) {
+      const box = document.getElementById(`chart-inspector`);
+      if (!box) return;
+      if (!pool) {
+        box.innerHTML = `<span>차트 막대를 클릭하거나 마우스를 올리면 해당 풀의 어제·오늘 APY와 TVL 상세 내역을 확인할 수 있습니다.</span>`;
+        return;
+      }
+      const warnText = isOutlierPool(pool) ? ` · [고수익 경고 ≥20%]` : ``;
+      box.innerHTML = `
+        <strong>${escapeHtml(pool.name)}${warnText}</strong>
+        <span>어제 ${formatPct(pool.yesterday)} → 오늘 ${formatPct(pool.today)} (<strong>${formatChange(pool.change)}</strong>) · TVL ${formatUsd(pool.tvl)}</span>
+      `;
+    }
+
+    function renderChart(filtered) {
+      const canvas = document.getElementById(`apy-change-chart`);
+      const wrap = document.getElementById(`chart-container-wrap`);
+      const subEl = document.getElementById(`chart-subtitle`);
+      if (!canvas || !wrap) return;
+
+      const changedPools = filtered.filter(function (p) { return p.change !== 0; });
+      let displayPools = [];
+      if (state.chartMode === `top` && changedPools.length > 16) {
+        const gainers = changedPools
+          .filter(function (p) { return p.change > 0; })
+          .sort(function (a, b) { return b.change - a.change; })
+          .slice(0, 8);
+        const losers = changedPools
+          .filter(function (p) { return p.change < 0; })
+          .sort(function (a, b) { return a.change - b.change; })
+          .slice(0, 8);
+        displayPools = gainers.concat(losers).sort(function (a, b) { return b.change - a.change; });
+      } else {
+        displayPools = changedPools.slice().sort(function (a, b) { return b.change - a.change; });
+      }
+
+      if (subEl) {
+        subEl.textContent = displayPools.length
+          ? `표시 중: ${displayPools.length}개 풀 (전체 변동 풀 ${changedPools.length}개 중) · 단위: %p`
+          : `현재 필터 조건에서 전일 대비 변동이 있는 풀이 없습니다.`;
+      }
+
+      const desiredHeight = Math.max(360, Math.min(920, displayPools.length * 26 + 90));
+      wrap.style.height = `${desiredHeight}px`;
+
+      if (typeof Chart === `undefined`) {
+        updateChartInspector(displayPools[0] || null);
+        return;
+      }
+
+      if (apyChartInstance) {
+        apyChartInstance.destroy();
+        apyChartInstance = null;
+      }
+
+      const posColor = getCssVar(`--positive`) || `#2b6e52`;
+      const negColor = getCssVar(`--error`) || `#b42318`;
+      const warnColor = getCssVar(`--primary-container`) || `#f2b705`;
+      const gridColor = getCssVar(`--outline-variant`) || `#dedad0`;
+      const zeroColor = getCssVar(`--outline`) || `#17181a`;
+      const inkColor = getCssVar(`--on-surface`) || `#17181a`;
+      const mutedColor = getCssVar(`--on-surface-variant`) || `#56585c`;
+
+      const labels = displayPools.map(function (p) {
+        const prefix = isOutlierPool(p) ? `[경고] ` : ``;
+        const shortName = p.name.length > 34 ? `${p.name.slice(0, 32)}…` : p.name;
+        return `${prefix}${shortName}`;
+      });
+      const values = displayPools.map(function (p) { return p.change; });
+      const bgColors = displayPools.map(function (p) {
+        return p.change >= 0 ? posColor : negColor;
+      });
+      const borderColors = displayPools.map(function (p) {
+        return isOutlierPool(p) ? warnColor : (p.change >= 0 ? posColor : negColor);
+      });
+      const borderWidths = displayPools.map(function (p) {
+        return isOutlierPool(p) ? 2 : 0;
+      });
+
+      const ctx = canvas.getContext(`2d`);
+      apyChartInstance = new Chart(ctx, {
+        type: `bar`,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `어제 대비 APY 변화(%p)`,
+            data: values,
+            backgroundColor: bgColors,
+            borderColor: borderColors,
+            borderWidth: borderWidths,
+            borderRadius: 2,
+            barPercentage: 0.72
+          }]
+        },
+        options: {
+          indexAxis: `y`,
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 200 },
+          onClick: function (evt, elements) {
+            if (elements && elements.length > 0) {
+              const idx = elements[0].index;
+              updateChartInspector(displayPools[idx]);
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: inkColor,
+              padding: 10,
+              callbacks: {
+                title: function (items) {
+                  if (!items || !items.length) return ``;
+                  const p = displayPools[items[0].dataIndex];
+                  return p ? p.name : ``;
+                },
+                label: function (item) {
+                  const p = displayPools[item.dataIndex];
+                  if (!p) return ``;
+                  return [
+                    `변화: ${formatChange(p.change)}`,
+                    `어제 APY: ${formatPct(p.yesterday)} → 오늘 APY: ${formatPct(p.today)}`,
+                    `체인: ${p.chain} · TVL: ${formatCompactUsd(p.tvl)}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: function (context) {
+                  return context.tick && context.tick.value === 0 ? zeroColor : gridColor;
+                },
+                lineWidth: function (context) {
+                  return context.tick && context.tick.value === 0 ? 1.5 : 1;
+                }
+              },
+              ticks: {
+                color: mutedColor,
+                font: { family: `'Geist Mono', monospace`, size: 11 },
+                callback: function (val) {
+                  const n = Number(val);
+                  return n > 0 ? `+${n}%p` : `${n}%p`;
+                }
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                color: inkColor,
+                font: { family: `'Noto Sans KR', sans-serif`, size: 12 },
+                autoSkip: false
+              }
+            }
+          }
+        }
+      });
+
+      if (displayPools.length) {
+        updateChartInspector(displayPools[0]);
+      } else {
+        updateChartInspector(null);
+      }
+    }
+
+    function updateSortHeaderIndicators() {
+      const buttons = document.querySelectorAll(`.sort-btn`);
+      buttons.forEach(function (btn) {
+        const col = btn.getAttribute(`data-sort`);
+        const arrowEl = document.getElementById(`arrow-${col}`);
+        if (col === state.sortKey) {
+          btn.classList.add(`is-sorted`);
+          if (arrowEl) arrowEl.textContent = state.sortDir === `asc` ? `↑` : `↓`;
+        } else {
+          btn.classList.remove(`is-sorted`);
+          if (arrowEl) arrowEl.textContent = `↕`;
+        }
+      });
+
+      const mobileSelect = document.getElementById(`mobile-sort-select`);
+      const mobileDirBtn = document.getElementById(`mobile-sort-dir-btn`);
+      if (mobileSelect && mobileSelect.value !== state.sortKey) {
+        mobileSelect.value = state.sortKey;
+      }
+      if (mobileDirBtn) {
+        mobileDirBtn.textContent = state.sortDir === `asc` ? `오름차순 ↑` : `내림차순 ↓`;
+      }
+    }
+
+    function renderTableAndMobileCards(sorted) {
+      const tbody = document.getElementById(`pool-table-body`);
+      const mobileList = document.getElementById(`mobile-pool-list`);
+      const countLabel = document.getElementById(`table-count-label`);
+      const emptyEl = document.getElementById(`empty-state`);
+
+      if (countLabel) {
+        countLabel.textContent = `총 ${POOLS.length}개 중 ${sorted.length}개 표시 중`;
+      }
+
+      if (!sorted.length) {
+        if (tbody) tbody.innerHTML = ``;
+        if (mobileList) mobileList.innerHTML = ``;
+        if (emptyEl) emptyEl.classList.add(`is-visible`);
+        return;
+      }
+
+      if (emptyEl) emptyEl.classList.remove(`is-visible`);
+
+      if (tbody) {
+        tbody.innerHTML = sorted.map(function (p) {
+          const outlier = isOutlierPool(p);
+          const changeClass = p.change > 0 ? `is-pos` : (p.change < 0 ? `is-neg` : `is-flat`);
+          const warnPill = outlier ? `<span class="pool-warn-pill">고수익 경고 ≥20%</span>` : ``;
+          const shortId = p.id.slice(0, 8);
+          return `
+            <tr class="${outlier ? `row-outlier` : ``}">
+              <td>
+                <div class="pool-name-cell">
+                  <div class="pool-title-line">
+                    <span>${escapeHtml(p.name)}</span>
+                    ${warnPill}
+                  </div>
+                </div>
+              </td>
+              <td>${escapeHtml(p.protocol)}</td>
+              <td><span class="chain-badge">${escapeHtml(p.chain)}</span></td>
+              <td><span class="asset-badge">${escapeHtml(p.asset)}</span></td>
+              <td class="num-col">${formatPct(p.yesterday)}</td>
+              <td class="num-col"><strong>${formatPct(p.today)}</strong></td>
+              <td class="num-col"><span class="change-pill ${changeClass}">${formatChange(p.change)}</span></td>
+              <td class="num-col" title="${formatUsd(p.tvl)}">${formatCompactUsd(p.tvl)}</td>
+              <td>
+                <div class="defillama-cell">
+                  <button type="button" class="copy-link-btn" onclick="copyDefiLlamaPath('${escapeHtml(p.id)}', this)" title="${escapeHtml(getDefiLlamaPath(p.id))}">경로 복사 · ${escapeHtml(shortId)}</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join(``);
+      }
+
+      if (mobileList) {
+        mobileList.innerHTML = sorted.map(function (p) {
+          const outlier = isOutlierPool(p);
+          const changeClass = p.change > 0 ? `is-pos` : (p.change < 0 ? `is-neg` : `is-flat`);
+          const warnPill = outlier ? `<span class="pool-warn-pill">고수익 경고 ≥20%</span>` : ``;
+          return `
+            <article class="mobile-pool-card ${outlier ? `row-outlier` : ``}">
+              <div class="mobile-card-top">
+                <div class="pool-title-line">
+                  <span>${escapeHtml(p.name)}</span>
+                  ${warnPill}
+                </div>
+                <span class="change-pill ${changeClass}">${formatChange(p.change)}</span>
+              </div>
+              <div class="mobile-card-meta">
+                <span class="chain-badge">${escapeHtml(p.chain)}</span>
+                <span class="asset-badge">${escapeHtml(p.asset)}</span>
+                <span class="chain-badge">${escapeHtml(p.protocol)}</span>
+              </div>
+              <div class="mobile-metrics-grid">
+                <div>
+                  <span class="mobile-metric-label">어제 APY</span>
+                  <span class="mobile-metric-val">${formatPct(p.yesterday)}</span>
+                </div>
+                <div>
+                  <span class="mobile-metric-label">오늘 APY</span>
+                  <span class="mobile-metric-val">${formatPct(p.today)}</span>
+                </div>
+                <div>
+                  <span class="mobile-metric-label">TVL (USD)</span>
+                  <span class="mobile-metric-val">${formatCompactUsd(p.tvl)}</span>
+                </div>
+                <div>
+                  <span class="mobile-metric-label">TVL 원화 참고(단위)</span>
+                  <span class="mobile-metric-val">${formatUsd(p.tvl)}</span>
+                </div>
+              </div>
+              <div class="mobile-card-foot">
+                <span class="defi-path-text">${escapeHtml(getDefiLlamaPath(p.id))}</span>
+                <button type="button" class="copy-link-btn" onclick="copyDefiLlamaPath('${escapeHtml(p.id)}', this)">DefiLlama 경로 복사</button>
+              </div>
+            </article>
+          `;
+        }).join(``);
+      }
+    }
+
+    function renderAll() {
+      const filtered = getFilteredPools();
+      const sorted = getSortedPools(filtered);
+      renderChainChips();
+      renderKpis(filtered);
+      renderChart(filtered);
+      updateSortHeaderIndicators();
+      renderTableAndMobileCards(sorted);
+    }
+
+    /* Hoisted event handlers */
+    function selectChain(chain) {
+      state.chain = chain;
+      renderAll();
+    }
+
+    function handleSearchInput(val) {
+      state.search = val;
+      renderAll();
+    }
+
+    function handleDirectionChange(val) {
+      state.direction = val;
+      renderAll();
+    }
+
+    function handleAssetChange(val) {
+      state.asset = val;
+      renderAll();
+    }
+
+    function resetAllFilters() {
+      state.chain = `ALL`;
+      state.asset = `ALL`;
+      state.direction = `all`;
+      state.search = ``;
+      const searchEl = document.getElementById(`search-input`);
+      const dirEl = document.getElementById(`direction-select`);
+      const assetEl = document.getElementById(`asset-select`);
+      if (searchEl) searchEl.value = ``;
+      if (dirEl) dirEl.value = `all`;
+      if (assetEl) assetEl.value = `ALL`;
+      renderAll();
+    }
+
+    function filterOutliersOnly() {
+      state.chain = `ALL`;
+      state.asset = `ALL`;
+      state.search = ``;
+      state.direction = `outlier`;
+      const searchEl = document.getElementById(`search-input`);
+      const dirEl = document.getElementById(`direction-select`);
+      const assetEl = document.getElementById(`asset-select`);
+      if (searchEl) searchEl.value = ``;
+      if (dirEl) dirEl.value = `outlier`;
+      if (assetEl) assetEl.value = `ALL`;
+      renderAll();
+      const tableTitle = document.getElementById(`table-section-title`);
+      if (tableTitle && typeof tableTitle.scrollIntoView === `function`) {
+        tableTitle.scrollIntoView({ behavior: `smooth`, block: `start` });
+      }
+    }
+
+    function setChartMode(mode) {
+      state.chartMode = mode;
+      const topBtn = document.getElementById(`mode-top`);
+      const chgBtn = document.getElementById(`mode-changed`);
+      if (topBtn) topBtn.classList.toggle(`is-active`, mode === `top`);
+      if (chgBtn) chgBtn.classList.toggle(`is-active`, mode === `changed`);
+      renderChart(getFilteredPools());
+    }
+
+    function sortByColumn(key) {
+      if (state.sortKey === key) {
+        state.sortDir = state.sortDir === `asc` ? `desc` : `asc`;
+      } else {
+        state.sortKey = key;
+        state.sortDir = (key === `name` || key === `protocol` || key === `chain` || key === `asset`) ? `asc` : `desc`;
+      }
+      updateSortHeaderIndicators();
+      renderTableAndMobileCards(getSortedPools(getFilteredPools()));
+    }
+
+    function handleMobileSortChange(key) {
+      state.sortKey = key;
+      state.sortDir = (key === `name` || key === `protocol` || key === `chain` || key === `asset`) ? `asc` : `desc`;
+      updateSortHeaderIndicators();
+      renderTableAndMobileCards(getSortedPools(getFilteredPools()));
+    }
+
+    function toggleMobileSortDir() {
+      state.sortDir = state.sortDir === `asc` ? `desc` : `asc`;
+      updateSortHeaderIndicators();
+      renderTableAndMobileCards(getSortedPools(getFilteredPools()));
+    }
+
+    function copyDefiLlamaPath(id, btn) {
+      const pathText = getDefiLlamaPath(id);
+      const feedback = document.getElementById(`copy-feedback`);
+      function showSuccess() {
+        if (btn) {
+          btn.classList.add(`is-copied`);
+          btn.textContent = `복사됨 ✓`;
+          setTimeout(function () {
+            btn.classList.remove(`is-copied`);
+            btn.textContent = btn.closest(`.mobile-card-foot`) ? `DefiLlama 경로 복사` : `경로 복사 · ${id.slice(0, 8)}`;
+          }, 1800);
+        }
+        if (feedback) {
+          feedback.textContent = `복사 완료: ${pathText}`;
+          if (copyTimer) clearTimeout(copyTimer);
+          copyTimer = setTimeout(function () {
+            feedback.textContent = ``;
+          }, 3000);
+        }
+      }
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === `function`) {
+        navigator.clipboard.writeText(pathText).then(showSuccess, showSuccess);
+      } else {
+        const tmp = document.createElement(`textarea`);
+        tmp.value = pathText;
+        tmp.setAttribute(`readonly`, ``);
+        tmp.style.position = `absolute`;
+        tmp.style.left = `-9999px`;
+        document.body.appendChild(tmp);
+        tmp.select();
+        try { document.execCommand(`copy`); } catch (e) {}
+        document.body.removeChild(tmp);
+        showSuccess();
+      }
+    }
+
+    /* Initial Boot */
+    renderOutlierSummary();
+    renderAssetOptions();
+    renderAll();
+  </script>
+</body>
+</html>
